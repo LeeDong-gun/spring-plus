@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface TodoRepository extends JpaRepository<Todo, Long> {
+public interface TodoRepository extends JpaRepository<Todo, Long>, CustomTodoRepository {
 
     // 검색 조건에 맞는 쿼리문
     @Query("SELECT t FROM Todo t WHERE " +
@@ -24,9 +24,9 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             Pageable pageablePageable
     );
 
-    @Query("SELECT t FROM Todo t " +
-            "LEFT JOIN t.user " +
-            "WHERE t.id = :todoId")
-    Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
+//    @Query("SELECT t FROM Todo t " +
+//            "LEFT JOIN t.user " +
+//            "WHERE t.id = :todoId")
+//    Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
 
 }
