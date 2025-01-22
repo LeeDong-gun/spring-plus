@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.user.enums.UserRole;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -77,10 +78,11 @@ public class JwtFilter implements Filter {
 
             // UserDetail을 상속받은 AuthUser 생성
             AuthUser userDetails = new AuthUser(userId, email, userRole);
-
             // SecurityContext 에 인증 정보 저장
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            // ContextHolder 설정
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
 //            httpRequest.setAttribute("userId", userId);
 //            httpRequest.setAttribute("email", email);
