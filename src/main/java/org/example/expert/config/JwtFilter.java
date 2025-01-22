@@ -10,12 +10,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.user.enums.UserRole;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class JwtFilter implements Filter {
 
     private final JwtUtil jwtUtil;
@@ -57,9 +63,29 @@ public class JwtFilter implements Filter {
 
             UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
-            httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
-            httpRequest.setAttribute("email", claims.get("email"));
-            httpRequest.setAttribute("userRole", claims.get("userRole"));
+            Long userId = Long.parseLong(claims.getSubject());
+            String email = claims.get("email", String.class);
+            String role = claims.get("userRole", String.class);
+
+
+//            // UserDetail 만들기
+//            UserDetails userDetails = User.builder()
+//                    .username((String) httpRequest.getAttribute("email"))
+//                    .password("")
+//                    .authorities(role)
+//                    .build();
+
+            // UserDetail을 상속받은 AuthUser 생성
+            AuthUser userDetails = new AuthUser(userId, email, userRole);
+
+            // SecurityContext 에 인증 정보 저장
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+//            httpRequest.setAttribute("userId", userId);
+//            httpRequest.setAttribute("email", email);
+//            httpRequest.setAttribute("userRole", role);
+
 
             if (url.startsWith("/admin")) {
                 // 관리자 권한이 없는 경우 403을 반환합니다.

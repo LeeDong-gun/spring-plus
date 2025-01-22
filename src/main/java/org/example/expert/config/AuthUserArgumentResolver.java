@@ -12,6 +12,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+// Resolver 를 이제 사용하지 않지만 학습 참고용으로 남겨두겠습니다.
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
